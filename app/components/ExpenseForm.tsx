@@ -5,58 +5,21 @@ import { Expense } from "../types/expense"
 import { Card } from "./ui/Card"
 import { Input } from "./ui/Input"
 import { Button } from "./ui/Button"
-import { expenseSchema } from "../lib/expenseSchema"
+
 
 interface Props {
   onAdd: (expense: Expense) => void
 }
 
 export default function ExpenseForm({ onAdd }: Props) {
-  const [name, setName] = useState("")
-  const [amount, setAmount] = useState("")
-  const [category, setCategory] = useState("")
+const [name, setName] = useState("")
+const [amount, setAmount] = useState("")
+const [category, setCategory] = useState("")
+const [errors, setErrors] = useState<Record<string, string>>({})
 
-  // const handleSubmit = (e: React.FormEvent) => {
-  //   e.preventDefault()
-  //   if (!name || !amount || !category) return;
-
-  //   const newExpense: Expense = {
-  //     id: Date.now().toString(),
-  //     name,
-  //     amount: Number(amount),
-  //     category,
-  //   }
-
-  //   onAdd(newExpense)
-  //   setName("")
-  //   setAmount("")
-  // }
-
-  // with zod Schema
-   const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    
-    // 1. Run the form data through our Zod schema
-    const result = expenseSchema.safeParse({
-      name,
-      amount,
-      category,
-    });
-
-    // 2. If validation fails, map the Zod errors to our state
-    if (!result.success) {
-      const formattedErrors: Record<string, string> = {};
-      result.error.issues.forEach((issue) => {
-        if (issue.path[0]) {
-          formattedErrors[issue.path[0].toString()] = issue.message;
-        }
-      });
-      setErrors(formattedErrors);
-      return; 
-    }
-
-    // 3. If validation succeeds, clear errors and proceed
-    setErrors({});
+    if (!name || !amount || !category) return;
 
     const newExpense: Expense = {
       id: Date.now().toString(),
@@ -68,8 +31,9 @@ export default function ExpenseForm({ onAdd }: Props) {
     onAdd(newExpense)
     setName("")
     setAmount("")
-    setCategory("") 
   }
+
+ 
   return (
     <Card>
       <h2 className="text-xl font-semibold mb-4 text-gray-800">Add New Expense</h2>
@@ -82,6 +46,9 @@ export default function ExpenseForm({ onAdd }: Props) {
             onChange={(e) => setName(e.target.value)}
             required
           />
+          {errors.name && (
+  <p className="text-red-500 text-sm">{errors.name}</p>
+)}
         </div>
 
         <div>
@@ -95,6 +62,7 @@ export default function ExpenseForm({ onAdd }: Props) {
             onChange={(e) => setAmount(e.target.value)}
             required
           />
+         {errors.amount && <p className="text-red-500 text-sm">{errors.amount}</p>}
         </div>
 
         <div>
@@ -112,6 +80,7 @@ export default function ExpenseForm({ onAdd }: Props) {
             <option value="Utilities">Utilities</option>
             <option value="Other">Other</option>
           </select>
+{errors.category && <p className="text-red-500 text-sm">{errors.category}</p>}
         </div>
 
         <Button type="submit" className="w-full" variant="primary">
@@ -122,6 +91,4 @@ export default function ExpenseForm({ onAdd }: Props) {
   )
 }
 
-function setErrors(formattedErrors: Record<string, string>) {
-  throw new Error("Function not implemented.")
-}
+
