@@ -15,7 +15,6 @@ export default function ExpenseForm({ onAdd }: Props) {
 const [name, setName] = useState("")
 const [amount, setAmount] = useState("")
 const [category, setCategory] = useState("")
-const [errors, setErrors] = useState<Record<string, string>>({})
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -29,8 +28,9 @@ const [errors, setErrors] = useState<Record<string, string>>({})
     }
 
     onAdd(newExpense)
-    setName("")
-    setAmount("")
+   setName("")
+  setAmount("")
+  setCategory("")
   }
 
  
@@ -46,9 +46,7 @@ const [errors, setErrors] = useState<Record<string, string>>({})
             onChange={(e) => setName(e.target.value)}
             required
           />
-          {errors.name && (
-  <p className="text-red-500 text-sm">{errors.name}</p>
-)}
+          
         </div>
 
         <div>
@@ -62,13 +60,13 @@ const [errors, setErrors] = useState<Record<string, string>>({})
             onChange={(e) => setAmount(e.target.value)}
             required
           />
-         {errors.amount && <p className="text-red-500 text-sm">{errors.amount}</p>}
+
         </div>
 
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">Category</label>
           <select
-           
+           required
             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-gray-900"
             value={category}
             onChange={(e) => setCategory(e.target.value)}
@@ -80,7 +78,7 @@ const [errors, setErrors] = useState<Record<string, string>>({})
             <option value="Utilities">Utilities</option>
             <option value="Other">Other</option>
           </select>
-{errors.category && <p className="text-red-500 text-sm">{errors.category}</p>}
+
         </div>
 
         <Button type="submit" className="w-full" variant="primary">
